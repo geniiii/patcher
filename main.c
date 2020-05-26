@@ -1,23 +1,40 @@
-// TODO: macOS support, Linux patches
+/* TODO: macOS support */
 
 #ifdef _WIN32
 #define DEFAULT_FILENAME "Ripcord.exe"
+#define DEFAULT_PATCH_FILENAME "RipcordPatched.exe"
 #define _CRT_SECURE_NO_WARNINGS 1
 #else
 #define DEFAULT_FILENAME "Ripcord"
-#endif 
+#define DEFAULT_PATCH_FILENAME "RipcordPatched"
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "patches.h"
 
+const char* portable_ish_basename(const char* path) {
+	char* base = strrchr(path, '/');
+	if (!base) {
+		base = strrchr(path, '\\');
+	}
+	return base ? base + 1 : path;
+}
+
+void usage(const char* file_path) {
+	printf("Usage: %s [original (" DEFAULT_FILENAME ") [patched (" DEFAULT_PATCH_FILENAME ")]]", portable_ish_basename(file_path));
+}
+
 int main(int argc, char** argv) {
+	if (argc == 2 && (strcmp(argv[1], "help") || strcmp(argv[1], "--help"))) {
+		usage(argv[0]);
+		return 0;
+	}
+
 	FILE* fp = NULL;
 	if (argc == 1) {
-		fputs(
-			"No arguments passed, attempting to use Ripcord.exe as original "
-			"binary...\n",
-			stderr);
+		fputs("No arguments passed, attempting to use " DEFAULT_FILENAME " as original binary...\n", stderr);
 		fp = fopen(DEFAULT_FILENAME, "rb");
 	} else {
 		fp = fopen(argv[1], "rb");
@@ -43,7 +60,7 @@ int main(int argc, char** argv) {
 	fread(buf, size, sizeof(byte), fp);
 	fclose(fp);
 
-	for (unsigned i = 0; i < NUM_PATCHES; ++i) {
+	for (unsigned i = 0; i < num_patches; ++i) {
 		const patch* p = patches[i];
 		printf("Patch \"%s\":\n", p->name);
 		for (unsigned j = 0; j < p->sigsize; ++j) {
@@ -54,7 +71,13 @@ int main(int argc, char** argv) {
 		putchar('\n');
 	}
 
-	fp = fopen(argc <= 1 ? "RipcordPatched.exe" : argv[2], "wb");
+	if (argc < 2) {
+		fputs("No patched filename passed, attempting to use " DEFAULT_PATCH_FILENAME " as patched binary...\n", stderr);
+		fp = fopen(DEFAULT_PATCH_FILENAME, "wb");
+	} else {
+		fp = fopen(argv[2], "wb");
+	}
+
 	if (!fp) {
 		fputs("Failed to create patched binary!\n", stderr);
 		return 1;
