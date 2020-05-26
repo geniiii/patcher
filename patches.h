@@ -25,7 +25,7 @@ PATCH(cooldown, 0x14A1E4, {0x90, 0x90, 0xB1, 0x00, 0x90});
 static const patch* patches[] = {
 	&deleted_message_space_length, &deleted_message_details,
 	&deleted_message_append, &deleted_message_space, &cooldown};
-#else
+#elif defined(__linux__)
 /* Linux patches */
 PATCH(deleted_message_details, 0x0015EE50,
 	  {0xB8, 0x01, 0x00, 0x00, 0x00, 0xC3});
