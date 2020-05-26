@@ -15,7 +15,7 @@ typedef struct {
 	static const patch patchname = {#patchname, _address, sizeof patch_sig_##patchname / sizeof(patch_sig_##patchname[0]), patch_sig_##patchname}
 
 #ifdef _WIN32
-// Windows patches
+/* Windows patches */
 PATCH(deleted_message_space_length, 0x1709CE, {0x08});
 PATCH(deleted_message_details, 0xE37EC, {0xEB});
 PATCH(deleted_message_append, 0x1709FC, {0xEB, 0x4C});
@@ -26,7 +26,7 @@ static const patch* patches[] = {
 	&deleted_message_space_length, &deleted_message_details,
 	&deleted_message_append, &deleted_message_space, &cooldown};
 #else
-// Linux patches
+/* Linux patches */
 PATCH(deleted_message_details, 0x0015EE50,
 	  {0xB8, 0x01, 0x00, 0x00, 0x00, 0xC3});
 PATCH(deleted_message_append, 0x00204DC9, {0xE9, 0x83, 0x00, 0x00});
