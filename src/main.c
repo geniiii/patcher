@@ -26,7 +26,7 @@ const char* portable_ish_basename(const char* path) {
 }
 
 void usage(const char* file_path) {
-	printf("Usage: %s [-h] [-l] [original (" DEFAULT_FILENAME ") [patched (" DEFAULT_PATCH_FILENAME ")]]", portable_ish_basename(file_path));
+	printf("Usage: %s [-h] [-l] [original (" DEFAULT_FILENAME ") [patched (" DEFAULT_PATCH_FILENAME ") [disabled patches]]]", portable_ish_basename(file_path));
 }
 
 void list() {
