@@ -9,7 +9,6 @@
 #define DEFAULT_PATCH_FILENAME "RipcordPatched"
 #endif
 
-#define PATCH_INFO_FORMAT "0x%.2x: 0x%.2x -> 0x%.2x\n"
 #define MATCH(a, b) strcmp(a, b) == 0
 
 #include <stdio.h>
@@ -96,7 +95,7 @@ int main(int argc, char** argv) {
 
 		printf("Patch \"%s\":\n", p->name);
 		for (unsigned j = 0; j < p->sigsize; ++j) {
-			printf(PATCH_INFO_FORMAT, p->address + j, buf[p->address + j], p->sig[j]);
+			printf("0x%.2x: 0x%.2x -> 0x%.2x\n", p->address + j, buf[p->address + j], p->sig[j]);
 			buf[p->address + j] = p->sig[j];
 		}
 		putchar('\n');
