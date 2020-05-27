@@ -9,11 +9,15 @@
 #define DEFAULT_PATCH_FILENAME "RipcordPatched"
 #endif
 
+#define PATCH_INFO_FORMAT "0x%.2x: 0x%.2x -> 0x%.2x\n"
+#define MATCH(a, b) strcmp(a, b) == 0
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "patches.h"
 
+/* I hope no (supported) OS ever uses anything different.. */
 const char* portable_ish_basename(const char* path) {
 	char* base = strrchr(path, '/');
 	if (!base) {
@@ -23,12 +27,23 @@ const char* portable_ish_basename(const char* path) {
 }
 
 void usage(const char* file_path) {
-	printf("Usage: %s [original (" DEFAULT_FILENAME ") [patched (" DEFAULT_PATCH_FILENAME ")]]", portable_ish_basename(file_path));
+	printf("Usage: %s [-h] [-l] [original (" DEFAULT_FILENAME ") [patched (" DEFAULT_PATCH_FILENAME ")]]", portable_ish_basename(file_path));
+}
+
+void list() {
+	for (unsigned i = 0; i < num_patches; ++i) {
+		printf("Patch \"%s\"\n", patches[i]->name);
+	}
 }
 
 int main(int argc, char** argv) {
-	if (argc == 2 && (strcmp(argv[1], "help") || strcmp(argv[1], "--help"))) {
-		usage(argv[0]);
+	if (argc == 2) {
+		if (MATCH(argv[1], "-h")) {
+			usage(argv[0]);
+		} else if (MATCH(argv[1], "-l")) {
+			list();
+		}
+
 		return 0;
 	}
 
@@ -73,7 +88,7 @@ int main(int argc, char** argv) {
 
 	for (unsigned i = 0; i < num_patches; ++i) {
 		const patch* p = patches[i];
-		
+
 		/* Patch is (probably) disabled */
 		if (p == NULL) {
 			continue;
@@ -81,8 +96,7 @@ int main(int argc, char** argv) {
 
 		printf("Patch \"%s\":\n", p->name);
 		for (unsigned j = 0; j < p->sigsize; ++j) {
-			printf("0x%.2x: 0x%.2x -> 0x%.2x\n", p->address + j,
-				   buf[p->address + j], p->sig[j]);
+			printf(PATCH_INFO_FORMAT, p->address + j, buf[p->address + j], p->sig[j]);
 			buf[p->address + j] = p->sig[j];
 		}
 		putchar('\n');
