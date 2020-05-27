@@ -51,7 +51,7 @@ int main(int argc, char** argv) {
 	if (argc > 3) {
 		for (unsigned i = 3; i < argc; ++i) {
 			for (unsigned p = 0; p < num_patches; ++p) {
-				if (strcmp(patches[p]->name, argv[i]) == 0) {
+				if (MATCH(patches[p]->name, argv[i])) {
 					patches[p] = NULL;
 				}
 			}
