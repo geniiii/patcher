@@ -1,0 +1,9 @@
+Language: Cpp
+BasedOnStyle: Chromium
+IndentWidth: 4
+TabWidth: 4
+UseTab: Always
+BinPackParameters: true
+AllowAllParametersOfDeclarationOnNextLine: true
+CommentPragmas: '.\/[\*(\/\/)]+(.+\n.+)+\*\/'
+ColumnLimit: 0

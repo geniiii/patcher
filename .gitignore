@@ -1,0 +1,6 @@
+.vs/*
+*.exe
+patcher
+*.filters
+*.user
+*.obj
