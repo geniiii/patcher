@@ -50,6 +50,11 @@ int main(int argc, char** argv) {
 	if (argc > 3) {
 		for (unsigned i = 3; i < argc; ++i) {
 			for (unsigned p = 0; p < num_patches; ++p) {
+				/* Patch may already be disabled (or NULL for some other reason) */
+				if (!patches[p]) {
+					continue;
+				}
+
 				if (MATCH(patches[p]->name, argv[i])) {
 					patches[p] = NULL;
 				}
@@ -89,7 +94,7 @@ int main(int argc, char** argv) {
 		const patch* p = patches[i];
 
 		/* Patch is (probably) disabled */
-		if (p == NULL) {
+		if (!p) {
 			continue;
 		}
 
