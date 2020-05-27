@@ -12,25 +12,15 @@ trigger:
 jobs:
   - job: Linux
     pool:
-      vmImage: 'ubuntu-latest'
+      vmImage: ubuntu-latest
 
     steps:
     - script: gcc -std=c99 -pedantic -Wextra -O3 -o patcher main.c patches.c
       displayName: 'Build'
 
-    - bash: |
-        export RELEASE_TAG=$(git describe)
-        echo "##vso[task.setvariable variable=release_tag]$RELEASE_TAG"
-        mv $SYSTEM_DEFAULTWORKINGDIRECTORY/patcher $BUILD_ARTIFACTSTAGINGDIRECTORY/patcher
+    - bash: mv $SYSTEM_DEFAULTWORKINGDIRECTORY/patcher $BUILD_ARTIFACTSTAGINGDIRECTORY/patcher-linux-x64
       displayName: Move binary to artifact directory
-      
-    - task: GitHubRelease@1
-      condition: startswith(variables['Build.SourceBranch'], 'refs/tags/')
-      displayName: Create GitHub release
-      inputs:
-        gitHubConnection: releases
-        title: $(release_tag)
-        tagPattern: ^v(\d+\.)+(\d+\.)+(\*|\d+)$
+
     - task: PublishBuildArtifacts@1
       displayName: Upload binary to artifacts
       inputs:
@@ -39,7 +29,7 @@ jobs:
 
   - job: Windows
     pool:
-      vmImage: 'windows-latest'
+      vmImage: windows-latest
 
     steps:
     - task: MSBuild@1
@@ -48,12 +38,34 @@ jobs:
         platform: x64
         configuration: Release
 
+    - bash: mv $SYSTEM_DEFAULTWORKINGDIRECTORY/x64/Release/patcher.exe $BUILD_ARTIFACTSTAGINGDIRECTORY/patcher-windows-x64.exe
+      displayName: Move binary to artifact directory
+
+    - task: PublishBuildArtifacts@1
+      displayName: Upload binary to artifacts
+      inputs:
+        artifactName: patcher
+        pathToPublish: $(Build.ArtifactStagingDirectory)
+
+  - job: Release
+    displayName: Create GitHub Release
+    pool:
+      vmImage: ubuntu-latest
+
+    dependsOn:
+      - Windows
+      - Linux
+
+    steps:
+    - task: DownloadBuildArtifacts@0
+      inputs:
+        downloadType: specific
+
     - bash: |
         export RELEASE_TAG=$(git describe)
         echo "##vso[task.setvariable variable=release_tag]$RELEASE_TAG"
-        mv $SYSTEM_DEFAULTWORKINGDIRECTORY/x64/Release/patcher.exe $BUILD_ARTIFACTSTAGINGDIRECTORY/patcher.exe
-      displayName: Move binary to artifact directory
-
+      displayName: Set release tag
+ 
     - task: GitHubRelease@1
       condition: startswith(variables['Build.SourceBranch'], 'refs/tags/')
       displayName: Create GitHub release
@@ -61,8 +73,4 @@ jobs:
         gitHubConnection: releases
         title: $(release_tag)
         tagPattern: ^v(\d+\.)+(\d+\.)+(\*|\d+)$
-    - task: PublishBuildArtifacts@1
-      displayName: Upload binary to artifacts
-      inputs:
-        artifactName: patcher
-        pathToPublish: $(Build.ArtifactStagingDirectory)
+        assets: $(System.ArtifactsDirectory)/patcher/*
