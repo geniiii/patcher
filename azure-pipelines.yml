@@ -15,7 +15,7 @@ jobs:
       vmImage: ubuntu-latest
 
     steps:
-    - script: gcc -std=c99 -pedantic -Wextra -O3 -o patcher main.c patches.c
+    - script: gcc -std=c99 -pedantic -Wextra -O3 -o patcher src/main.c src/patches.c
       displayName: 'Build'
 
     - bash: mv $SYSTEM_DEFAULTWORKINGDIRECTORY/patcher $BUILD_ARTIFACTSTAGINGDIRECTORY/patcher-linux-x64

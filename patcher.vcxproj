@@ -59,11 +59,11 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ItemGroup>
-    <ClCompile Include="main.c" />
-    <ClCompile Include="patches.c" />
+    <ClCompile Include="src/main.c" />
+    <ClCompile Include="src/patches.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="patches.h" />
+    <ClInclude Include="src/patches.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Targets" />
 </Project>
