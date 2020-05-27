@@ -25,7 +25,6 @@
       <ConformanceMode>true</ConformanceMode>
       <DisableLanguageExtensions>true</DisableLanguageExtensions>
       <CompileAs>CompileAsC</CompileAs>
-      <Optimization>MaxSpeed</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
     <Link>
