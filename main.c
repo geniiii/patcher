@@ -32,6 +32,17 @@ int main(int argc, char** argv) {
 		return 0;
 	}
 
+	/* User wants to disable specific patches */
+	if (argc > 3) {
+		for (unsigned i = 3; i < argc; ++i) {
+			for (unsigned p = 0; p < num_patches; ++p) {
+				if (strcmp(patches[p]->name, argv[i]) == 0) {
+					patches[p] = NULL;
+				}
+			}
+		}
+	}
+
 	FILE* fp = NULL;
 	if (argc == 1) {
 		fputs("No arguments passed, attempting to use " DEFAULT_FILENAME " as original binary...\n", stderr);
@@ -62,6 +73,12 @@ int main(int argc, char** argv) {
 
 	for (unsigned i = 0; i < num_patches; ++i) {
 		const patch* p = patches[i];
+		
+		/* Patch is (probably) disabled */
+		if (p == NULL) {
+			continue;
+		}
+
 		printf("Patch \"%s\":\n", p->name);
 		for (unsigned j = 0; j < p->sigsize; ++j) {
 			printf("0x%.2x: 0x%.2x -> 0x%.2x\n", p->address + j,
