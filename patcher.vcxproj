@@ -62,9 +62,11 @@
   <ItemGroup>
     <ClCompile Include="src/main.c" />
     <ClCompile Include="src/patches.c" />
+    <ClCompile Include="src/checks.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src/patches.h" />
+    <ClInclude Include="src/checks.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Targets" />
 </Project>

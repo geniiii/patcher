@@ -2,7 +2,7 @@
 
 #define PATCH(patchname, _address, ...)                \
 	static byte patch_sig_##patchname[] = __VA_ARGS__; \
-	static const patch patchname = {#patchname, _address, sizeof patch_sig_##patchname / sizeof(patch_sig_##patchname[0]), patch_sig_##patchname}
+	static const patch patchname = {#patchname, _address, sizeof patch_sig_##patchname / sizeof patch_sig_##patchname[0], patch_sig_##patchname}
 
 #ifdef _WIN32
 /* Windows patches */
@@ -24,4 +24,4 @@ PATCH(deleted_message_append, 0x00204DC9, {0xE9, 0x83, 0x00, 0x00});
 const patch* patches[] = {&deleted_message_details, &deleted_message_append};
 #endif
 
-const byte num_patches = sizeof patches / sizeof(patches[0]);
+const byte num_patches = sizeof patches / sizeof patches[0];

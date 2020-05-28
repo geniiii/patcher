@@ -11,9 +11,11 @@
 
 #define MATCH(a, b) strcmp(a, b) == 0
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "checks.h"
 #include "patches.h"
 
 /* I hope no (supported) OS ever uses anything different.. */
@@ -89,6 +91,23 @@ int main(int argc, char** argv) {
 	}
 	fread(buf, size, sizeof(byte), fp);
 	fclose(fp);
+
+	for (unsigned i = 0; i < num_checks; ++i) {
+		const check* c = checks[i];
+
+		for (unsigned j = 0; j < c->sigsize; ++j) {
+			if (buf[c->address + j] != c->sig[j]) {
+				fprintf(stderr, "Check \"%s\" failed!\n", c->name);
+
+				/* Don't return if there are any more checks left to do, it's better to let all of them run */
+				if (i == num_checks - 1) {
+					return 1;
+				}
+
+				break;
+			}
+		}
+	}
 
 	for (unsigned i = 0; i < num_patches; ++i) {
 		const patch* p = patches[i];
