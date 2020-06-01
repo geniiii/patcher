@@ -46,6 +46,23 @@ jobs:
       inputs:
         artifactName: patcher
         pathToPublish: $(Build.ArtifactStagingDirectory)
+   
+  - job: macOS
+    pool:
+      vmImage: macos-latest
+
+    steps:
+    - script: clang -std=c99 -pedantic -Wextra -O3 -o patcher src/main.c src/patches.c src/checks.c
+      displayName: 'Build'
+
+    - bash: mv $SYSTEM_DEFAULTWORKINGDIRECTORY/patcher $BUILD_ARTIFACTSTAGINGDIRECTORY/patcher-macOS
+      displayName: Move binary to artifact directory
+
+    - task: PublishBuildArtifacts@1
+      displayName: Upload binary to artifacts
+      inputs:
+        artifactName: patcher
+        pathToPublish: $(Build.ArtifactStagingDirectory)
 
   - job: Release
     displayName: Create GitHub Release
@@ -55,6 +72,7 @@ jobs:
     dependsOn:
       - Windows
       - Linux
+      - macOS
 
     steps:
     - task: DownloadBuildArtifacts@0
