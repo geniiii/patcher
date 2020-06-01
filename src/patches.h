@@ -6,7 +6,7 @@ typedef unsigned char byte;
 typedef struct {
 	const char* name;
 	const unsigned address;
-	const unsigned sigsize;
+	const unsigned sig_size;
 	const byte* sig;
 } patch;
 

@@ -27,8 +27,8 @@ const char* portable_ish_basename(const char* path) {
 	return base ? base + 1 : path;
 }
 
-void usage(const char* file_path) {
-	printf("Usage: %s [-h] [-l] [original (" DEFAULT_FILENAME ") [patched (" DEFAULT_PATCH_FILENAME ") [disabled patches]]]", portable_ish_basename(file_path));
+void usage(const char* path) {
+	printf("Usage: %s [-h] [-l] [original (" DEFAULT_FILENAME ") [patched (" DEFAULT_PATCH_FILENAME ") [disabled patches]]]", portable_ish_basename(path));
 }
 
 void list() {
@@ -95,7 +95,7 @@ int main(int argc, char** argv) {
 	for (unsigned i = 0; i < num_checks; ++i) {
 		const check* c = checks[i];
 
-		for (unsigned j = 0; j < c->sigsize; ++j) {
+		for (unsigned j = 0; j < c->sig_size; ++j) {
 			if (buf[c->address + j] != c->sig[j]) {
 				fprintf(stderr, "Check \"%s\" failed!\n", c->name);
 
@@ -118,7 +118,7 @@ int main(int argc, char** argv) {
 		}
 
 		printf("Patch \"%s\":\n", p->name);
-		for (unsigned j = 0; j < p->sigsize; ++j) {
+		for (unsigned j = 0; j < p->sig_size; ++j) {
 			printf("0x%.2x: 0x%.2x -> 0x%.2x\n", p->address + j, buf[p->address + j], p->sig[j]);
 			buf[p->address + j] = p->sig[j];
 		}
