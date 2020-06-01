@@ -2,7 +2,7 @@
 #define DEFAULT_FILENAME "Ripcord.exe"
 #define DEFAULT_PATCH_FILENAME "RipcordPatched.exe"
 #define _CRT_SECURE_NO_WARNINGS 1
-#elif __linux__
+#elif __linux__ || __APPLE__
 #define DEFAULT_FILENAME "Ripcord"
 #define DEFAULT_PATCH_FILENAME "RipcordPatched"
 #endif
