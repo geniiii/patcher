@@ -18,8 +18,9 @@ const patch* patches[] = {
 PATCH(deleted_message_details, 0x15EE50,
 	  {0xB8, 0x01, 0x00, 0x00, 0x00, 0xC3});
 PATCH(deleted_message_append, 0x204DC9, {0xE9, 0x83, 0x00, 0x00});
+PATCH(cooldown, 0x164D70, {0xB8, 0x01, 0x00, 0x00, 0x00, 0xC3});
 
-const patch* patches[] = {&deleted_message_details, &deleted_message_append};
+const patch* patches[] = {&deleted_message_details, &deleted_message_append, &cooldown};
 #elif __APPLE__
 PATCH(deleted_message_details, 0x15EE50,
 	  {0xB8, 0x01, 0x00, 0x00, 0x00, 0xC3});
