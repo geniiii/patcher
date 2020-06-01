@@ -1,5 +1,3 @@
-/* TODO: macOS support */
-
 #ifdef _WIN32
 #define DEFAULT_FILENAME "Ripcord.exe"
 #define DEFAULT_PATCH_FILENAME "RipcordPatched.exe"
