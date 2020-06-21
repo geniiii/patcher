@@ -7,7 +7,7 @@
 #ifdef _WIN32
 CHECK(version_check, 0x3B36C0, "0.4.26");
 #elif __linux__
-CHECK(version_check, 0x4C2A7D, "0.4.25");
+CHECK(version_check, 0x4C949D, "0.4.26");
 #elif __APPLE__
 CHECK(version_check, 0x479846, "0.4.25");
 #endif

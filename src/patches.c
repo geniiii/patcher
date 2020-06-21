@@ -15,10 +15,10 @@ const patch* patches[] = {
 	&deleted_message_space_length, &deleted_message_details,
 	&deleted_message_append, &deleted_message_space, &cooldown};
 #elif __linux__
-PATCH(deleted_message_details, 0x15EE50,
+PATCH(deleted_message_details, 0x163CA0,
 	  {0xB8, 0x01, 0x00, 0x00, 0x00, 0xC3});
-PATCH(deleted_message_append, 0x204DC9, {0xE9, 0x83, 0x00, 0x00});
-PATCH(cooldown, 0x164D70, {0xB8, 0x01, 0x00, 0x00, 0x00, 0xC3});
+PATCH(deleted_message_append, 0x209CB9, {0xE9, 0x83, 0x00, 0x00});
+PATCH(cooldown, 0x169BC0, {0xB8, 0x01, 0x00, 0x00, 0x00, 0xC3});
 
 const patch* patches[] = {&deleted_message_details, &deleted_message_append, &cooldown};
 #elif __APPLE__
