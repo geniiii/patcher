@@ -93,17 +93,15 @@ int main(int argc, char** argv) {
 	for (unsigned i = 0; i < num_checks; ++i) {
 		const check* c = checks[i];
 
-		for (unsigned j = 0; j < c->sig_size; ++j) {
-			if (buf[c->address + j] != c->sig[j]) {
-				fprintf(stderr, "Check \"%s\" failed!\n", c->name);
+		if (!memcmp(buf + c->address, c->sig, c->sig_size)) {
+			fprintf(stderr, "Check \"%s\" failed!\n", c->name);
 
-				/* Don't return if there are any more checks left to do, it's better to let all of them run */
-				if (i == num_checks - 1) {
-					return 1;
-				}
-
-				break;
+			/* Don't return if there are any more checks left to do, it's better to let all of them run */
+			if (i == num_checks - 1) {
+				return 1;
 			}
+
+			break;
 		}
 	}
 
@@ -115,12 +113,8 @@ int main(int argc, char** argv) {
 			continue;
 		}
 
-		printf("Patch \"%s\":\n", p->name);
-		for (unsigned j = 0; j < p->sig_size; ++j) {
-			printf("0x%.2x: 0x%.2x -> 0x%.2x\n", p->address + j, buf[p->address + j], p->sig[j]);
-			buf[p->address + j] = p->sig[j];
-		}
-		putchar('\n');
+		memcpy(buf + p->address, p->sig, p->sig_size);
+		printf("Patch \"%s\" done\n", p->name);
 	}
 
 	if (argc < 2) {
