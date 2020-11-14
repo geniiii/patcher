@@ -93,7 +93,7 @@ int main(int argc, char** argv) {
 	for (unsigned i = 0; i < num_checks; ++i) {
 		const check* c = checks[i];
 
-		if (!memcmp(buf + c->address, c->sig, c->sig_size)) {
+		if (memcmp(buf + c->address, c->sig, c->sig_size) != 0) {
 			fprintf(stderr, "Check \"%s\" failed!\n", c->name);
 
 			/* Don't return if there are any more checks left to do, it's better to let all of them run */

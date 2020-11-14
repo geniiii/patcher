@@ -5,27 +5,27 @@
 	static const patch patchname = {#patchname, _address, sizeof patch_sig_##patchname / sizeof patch_sig_##patchname[0], patch_sig_##patchname}
 
 #ifdef _WIN32
-PATCH(deleted_message_space, 0x3DAE39, {0x20});
-PATCH(deleted_message_space_length, 0x174B9E, {0x08});
-PATCH(deleted_message_append, 0x174BCC, {0xEB, 0x4C});
-PATCH(deleted_message_details, 0xE7C5C, {0xEB});
-PATCH(cooldown, 0x14E3B4, {0x90, 0x90, 0xB1, 0x00, 0x90});
+PATCH(deleted_message_space, 0x3DB9F1, {0x20});
+PATCH(deleted_message_space_length, 0x17614B, {0x08});
+PATCH(deleted_message_append, 0x176179, {0xEB, 0x4C});
+PATCH(deleted_message_details, 0xE8DDC, {0xEB});
+PATCH(cooldown, 0x14F8C4, {0x90, 0x90, 0xB1, 0x00, 0x90});
 
 const patch* patches[] = {
 	&deleted_message_space_length, &deleted_message_details,
 	&deleted_message_append, &deleted_message_space, &cooldown};
 #elif __linux__
-PATCH(deleted_message_details, 0x163CA0,
+PATCH(deleted_message_details, 0x163FA0,
 	  {0xB8, 0x01, 0x00, 0x00, 0x00, 0xC3});
-PATCH(deleted_message_append, 0x209CB9, {0xE9, 0x83, 0x00, 0x00});
-PATCH(cooldown, 0x169BC0, {0xB8, 0x01, 0x00, 0x00, 0x00, 0xC3});
+PATCH(deleted_message_append, 0x209DE3, {0xE9, 0x83, 0x00, 0x00});
+PATCH(cooldown, 0x169CD0, {0xB8, 0x01, 0x00, 0x00, 0x00, 0xC3});
 
 const patch* patches[] = {&deleted_message_details, &deleted_message_append, &cooldown};
 #elif __APPLE__
-PATCH(deleted_message_details, 0x163C80,
+PATCH(deleted_message_details, 0xA2338,
 	  {0xB8, 0x01, 0x00, 0x00, 0x00, 0xC3});
-PATCH(deleted_message_append, 0x209669, {0xE9, 0x83, 0x00, 0x00});
-PATCH(cooldown, 0x11ECD0, {0xB8, 0x01, 0x00, 0x00, 0x00, 0xC3});
+PATCH(deleted_message_append, 0x188C4, {0xE9, 0x83, 0x00, 0x00});
+PATCH(cooldown, 0x11EE8C, {0xB0, 0x01, 0x90});
 
 const patch* patches[] = {&deleted_message_details, &deleted_message_append, &cooldown};
 #endif
