@@ -1,0 +1,22 @@
+:hardbreaks:
+
+= patcher
+Ripcord binary patcher
+
+== What does this do?
+Patches Ripcord to allow for extra functionality.
+Currently has patches that allow you to:
+
+* See deleted messages
+* Send messages in channels with a cooldown enabled
+
+Adding completely new features is not in the scope of this project.
+
+== Supported platforms
+Windows is the only one I make sure always works, as it's the platform I usually use.
+I will occasionally test the Linux patches, however I can't assure you that they'll always work.
+macOS is "supported", as in I've tried to make it work. I don't own a Mac, nor do I have a Hackintosh VM to test on.
+
+== Supported versions
+Only works on 0.4.27, although you can go back a few commits if you want to use older versions.
+This doesn't use pattern matching, so I have to manually update every time a new Ripcord version is released. It's usually updated within 12 hours of a new release, but I can't guarantee anything.
