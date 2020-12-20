@@ -5,11 +5,11 @@
 	static const patch patchname = {#patchname, _address, sizeof patch_sig_##patchname / sizeof patch_sig_##patchname[0], patch_sig_##patchname}
 
 #ifdef _WIN32
-PATCH(deleted_message_space, 0x3DB9F1, {0x20});
-PATCH(deleted_message_space_length, 0x17614B, {0x08});
-PATCH(deleted_message_append, 0x176179, {0xEB, 0x4C});
-PATCH(deleted_message_details, 0xE8DDC, {0xEB});
-PATCH(cooldown, 0x14F8C4, {0x90, 0x90, 0xB1, 0x00, 0x90});
+PATCH(deleted_message_space, 0x3DEC11, {0x20});
+PATCH(deleted_message_space_length, 0x177D2B, {0x08});
+PATCH(deleted_message_append, 0x177D59, {0xEB, 0x4C});
+PATCH(deleted_message_details, 0xE985C, {0xEB});
+PATCH(cooldown, 0x15148F, {0xEB, 0x46});
 
 const patch* patches[] = {
 	&deleted_message_space_length, &deleted_message_details,
