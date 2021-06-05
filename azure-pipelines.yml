@@ -15,7 +15,7 @@ jobs:
       vmImage: ubuntu-latest
 
     steps:
-    - script: gcc -std=c99 -pedantic -Wextra -O3 -DBUILD_LINUX=1 -o $BUILD_ARTIFACTSTAGINGDIRECTORY/patcher-linux-x64 src/build.c
+    - script: gcc -std=c99 -pedantic -Wextra -O3 -DBUILD_LINUX=1 -o $BUILD_ARTIFACTSTAGINGDIRECTORY/patcher-linux-x64 source/build.c
       displayName: 'Build'
 
     - task: PublishBuildArtifacts@1
@@ -30,7 +30,8 @@ jobs:
 
     steps:
     - script: |
-        call build_release.bat
+        call "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x64
+        call "build_release.bat"
         move %SYSTEM_DEFAULTWORKINGDIRECTORY%\\build\\patcher.exe %BUILD_ARTIFACTSTAGINGDIRECTORY%\\patcher-windows-x64.exe
       displayName: Build
 
