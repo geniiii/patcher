@@ -15,11 +15,8 @@ jobs:
       vmImage: ubuntu-latest
 
     steps:
-    - script: gcc -std=c99 -pedantic -Wextra -O3 -o patcher src/main.c src/patches.c src/checks.c
+    - script: gcc -std=c99 -pedantic -Wextra -O3 -DBUILD_LINUX=1 -o $BUILD_ARTIFACTSTAGINGDIRECTORY/patcher-linux-x64 src/build.c
       displayName: 'Build'
-
-    - bash: mv $SYSTEM_DEFAULTWORKINGDIRECTORY/patcher $BUILD_ARTIFACTSTAGINGDIRECTORY/patcher-linux-x64
-      displayName: Move binary to artifact directory
 
     - task: PublishBuildArtifacts@1
       displayName: Upload binary to artifacts
@@ -32,31 +29,10 @@ jobs:
       vmImage: windows-latest
 
     steps:
-    - task: MSBuild@1
-      inputs:
-        solution: $(System.DefaultWorkingDirectory)/patcher.vcxproj
-        platform: x64
-        configuration: Release
-
-    - bash: mv $SYSTEM_DEFAULTWORKINGDIRECTORY/x64/Release/patcher.exe $BUILD_ARTIFACTSTAGINGDIRECTORY/patcher-windows-x64.exe
-      displayName: Move binary to artifact directory
-
-    - task: PublishBuildArtifacts@1
-      displayName: Upload binary to artifacts
-      inputs:
-        artifactName: patcher
-        pathToPublish: $(Build.ArtifactStagingDirectory)
-   
-  - job: macOS
-    pool:
-      vmImage: macos-latest
-
-    steps:
-    - script: clang -std=c99 -pedantic -Wextra -O3 -o patcher src/main.c src/patches.c src/checks.c
-      displayName: 'Build'
-
-    - bash: mv $SYSTEM_DEFAULTWORKINGDIRECTORY/patcher $BUILD_ARTIFACTSTAGINGDIRECTORY/patcher-macOS
-      displayName: Move binary to artifact directory
+    - script: |
+        call build_release.bat
+        move %SYSTEM_DEFAULTWORKINGDIRECTORY%\\build\\patcher.exe %BUILD_ARTIFACTSTAGINGDIRECTORY%\\patcher-windows-x64.exe
+      displayName: Build
 
     - task: PublishBuildArtifacts@1
       displayName: Upload binary to artifacts
@@ -72,7 +48,6 @@ jobs:
     dependsOn:
       - Windows
       - Linux
-      - macOS
 
     steps:
     - task: DownloadBuildArtifacts@0

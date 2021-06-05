@@ -1,9 +1,1 @@
-.vs/*
-*.exe
-patcher
-*.filters
-*.user
-*.obj
-patcher.vcxproj
-patcher.log
-patcher.sln
+build/
