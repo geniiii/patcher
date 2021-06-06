@@ -17,5 +17,5 @@ Windows and Linux, though the latter won't get updated as quickly.
 
 == Supported versions
 Windows: `0.4.29`
-Linux: `0.4.27`
+Linux: `0.4.29`
 This doesn't use pattern matching, so I have to manually update every time a new Ripcord version is released. It's usually updated within 12 hours of a new release, but I can't guarantee anything.
