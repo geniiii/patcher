@@ -1,67 +1,107 @@
-i32 main(i32 argc, char** argv) {
+i32 main(i32 args_count, char** args) {
 	// TODO(geni): Rewrite this whole thing
-	// TODO(geni): Memory-mapped files
 
-	if (argc == 2) {
-		if (CStringCompareToS8(argv[1], S8Lit("-h"))) {
-			String8 base_name = S8PathToBaseName(S8FromCString(argv[0]));
-			printf("Usage: %.*s [-h] [-l] [original (" DEFAULT_FILENAME ") [patched (" DEFAULT_PATCH_FILENAME ") [disabled patches]]]", S8Expand(base_name));
-		} else if (CStringCompareToS8(argv[1], S8Lit("-l"))) {
+	if (args_count == 2) {
+		if (CStringCompareToS8(args[1], S8Lit("-h"))) {
+			String8 base_name = S8PathToBaseName(S8FromCString(args[0]));
+			printf("Usage: %.*s [-h] [-l] [filename (" DEFAULT_FILENAME ") [disabled patches]]]", S8Expand(base_name));
+			return 0;
+		} else if (CStringCompareToS8(args[1], S8Lit("-l"))) {
 			puts("Available patches:");
 			for (u32 i = 0; i < patches_count; ++i) {
 				printf("Patch \"%.*s\"\n", S8Expand(patches[i]->name));
 			}
+			return 0;
 		}
-
-		return 0;
 	}
 
 	// NOTE(geni): User wants to disable specific patches
-	if (argc > 3) {
-		for (i32 i = 3; i < argc; ++i) {
+	if (args_count >= 3) {
+		for (i32 i = 2; i < args_count; ++i) {
 			for (u32 p = 0; p < patches_count; ++p) {
-				if (!patches[p]) {
+				if (patches[p] == NULL) {
 					continue;
 				}
 
-				if (S8CompareToCString(patches[p]->name, argv[i])) {
+				if (S8CompareToCString(patches[p]->name, args[i])) {
+					printf("Disabling patch \"%.*s\"\n", S8Expand(patches[p]->name));
 					patches[p] = NULL;
 				}
 			}
 		}
 	}
 
-	FILE* fp = NULL;
-	if (argc == 1) {
-		fputs("No arguments passed, attempting to use " DEFAULT_FILENAME " as original binary...\n", stderr);
-		fp = fopen(DEFAULT_FILENAME, "rb");
+	String8 input;
+	if (args_count == 1) {
+		input = S8Lit(DEFAULT_FILENAME);
+		puts("No input filename passed, using \"" DEFAULT_FILENAME "\"");
 	} else {
-		fp = fopen(argv[1], "rb");
+		input = S8FromCString(args[1]);
 	}
 
-	if (!fp) {
-		fputs("Failed to open original binary!\n", stderr);
+#if BUILD_WIN32
+	HANDLE file;
+	{
+		DWORD desired_access	   = GENERIC_READ | GENERIC_WRITE;
+		DWORD share_mode		   = 0;
+		DWORD creation_disposition = OPEN_EXISTING;
+		DWORD flags_and_attributes = 0;
+
+		if ((file = CreateFile(input.cs, desired_access, share_mode, 0, creation_disposition, flags_and_attributes, 0)) == INVALID_HANDLE_VALUE) {
+			fprintf(stderr, "Failed to open file \"%.*s\" (error code %d)\n", S8Expand(input), GetLastError());
+			return 1;
+		}
+	}
+
+	HANDLE file_mapping;
+	{
+		DWORD desired_access = PAGE_READWRITE;
+		if ((file_mapping = CreateFileMappingA(file, 0, desired_access, 0, 0, 0)) == INVALID_HANDLE_VALUE) {
+			fprintf(stderr, "Failed to create file mapping object (error code %d)\n", GetLastError());
+			return 1;
+		}
+	}
+
+	u8* data;
+	{
+		DWORD desired_access = FILE_MAP_ALL_ACCESS;
+		if ((data = MapViewOfFile(file_mapping, desired_access, 0, 0, 0)) == NULL) {
+			fprintf(stderr, "Failed to create file view (error code %d)\n", GetLastError());
+			return 1;
+		}
+	}
+#elif BUILD_LINUX
+	i32 file;
+	{
+		i32 desired_access = O_RDWR;
+		if ((file = open(input.cs, desired_access)) == -1) {
+			fprintf(stderr, "Failed to open file \"%.*s\"\n", S8Expand(input));
+			return 1;
+		}
+	}
+
+	struct stat stats;
+	if (stat(input.cs, &stats) == -1) {
+		fputs("Failed to get file stats\n", stderr);
 		return 1;
 	}
 
-	fseek(fp, 0, SEEK_END);
-	const u64 size = ftell(fp);
-	rewind(fp);
-
-	u8* buf = malloc(size);
-	if (!buf) {
-		fprintf(stderr, "Failed to allocate buffer (size %zu), not enough memory?", size);
-		fclose(fp);
-		return 1;
+	u8* data;
+	{
+		i32 desired_access = PROT_READ | PROT_WRITE;
+		i32 visibility	   = MAP_SHARED;
+		if ((data = mmap(0, stats.st_size, desired_access, visibility, file, 0)) == MAP_FAILED) {
+			fputs("Failed to map file\n", stderr);
+			return 1;
+		}
 	}
-	fread(buf, size, sizeof(u8), fp);
-	fclose(fp);
+#endif
 
 	b32 failed_checks = 0;
 	for (u32 i = 0; i < checks_count; ++i) {
 		const Check* c = checks[i];
 
-		if (memcmp(buf + c->offset, PatternExpand(c->pattern)) != 0) {
+		if (memcmp(data + c->offset, PatternExpand(c->pattern)) != 0) {
 			fprintf(stderr, "Check \"%.*s\" failed!\n", S8Expand(c->name));
 			failed_checks = 1;
 		}
@@ -74,31 +114,11 @@ i32 main(i32 argc, char** argv) {
 		const Patch* p = patches[i];
 
 		// NOTE(geni): Patch is (hopefully) disabled
-		if (!p) {
+		if (p == NULL) {
 			continue;
 		}
 
-		memcpy(buf + p->offset, PatternExpand(p->pattern));
+		memcpy(data + p->offset, PatternExpand(p->pattern));
 		printf("Patch \"%.*s\" done\n", S8Expand(p->name));
 	}
-
-	if (argc < 2) {
-		fputs("No patched filename passed, attempting to use " DEFAULT_PATCH_FILENAME " as patched binary...\n", stderr);
-		fp = fopen(DEFAULT_PATCH_FILENAME, "wb");
-	} else {
-		fp = fopen(argv[2], "wb");
-	}
-
-	if (!fp) {
-		fputs("Failed to create patched binary!\n", stderr);
-		return 1;
-	}
-	const u64 written = fwrite(buf, sizeof(buf[0]), size, fp);
-	if (written != size) {
-		fputs("Number of bytes written differs from original size\n", stderr);
-		return 1;
-	}
-
-	fclose(fp);
-	free(buf);
 }

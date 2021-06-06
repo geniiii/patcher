@@ -13,7 +13,7 @@ set link_flags= -opt:ref -incremental:no /Debug:none
 
 if not exist build mkdir build
 pushd build
-%compiler% %build_options% %compile_flags% ../source/build.c /link %link_flags% /out:%application_name%.exe
+%compiler% %build_options% %compile_flags% ../source/win32/build.c /link %link_flags% /out:%application_name%.exe
 popd
 
 endlocal
