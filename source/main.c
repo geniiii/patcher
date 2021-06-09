@@ -48,7 +48,7 @@ i32 main(i32 args_count, char** args) {
 		DWORD flags_and_attributes = 0;
 
 		if ((file = CreateFile(input.cs, desired_access, share_mode, 0, creation_disposition, flags_and_attributes, 0)) == INVALID_HANDLE_VALUE) {
-			fprintf(stderr, "Failed to open file \"%.*s\" (error code %d)\n", S8Expand(input), GetLastError());
+			fprintf(stderr, "Failed to open file \"%.*s\" (error code %lu)\n", S8Expand(input), GetLastError());
 			return 1;
 		}
 	}
@@ -57,7 +57,7 @@ i32 main(i32 args_count, char** args) {
 	{
 		DWORD desired_access = PAGE_READWRITE;
 		if ((file_mapping = CreateFileMappingA(file, 0, desired_access, 0, 0, 0)) == INVALID_HANDLE_VALUE) {
-			fprintf(stderr, "Failed to create file mapping object (error code %d)\n", GetLastError());
+			fprintf(stderr, "Failed to create file mapping object (error code %lu)\n", GetLastError());
 			return 1;
 		}
 	}
@@ -66,7 +66,7 @@ i32 main(i32 args_count, char** args) {
 	{
 		DWORD desired_access = FILE_MAP_ALL_ACCESS;
 		if ((data = MapViewOfFile(file_mapping, desired_access, 0, 0, 0)) == NULL) {
-			fprintf(stderr, "Failed to create file view (error code %d)\n", GetLastError());
+			fprintf(stderr, "Failed to create file view (error code %lu)\n", GetLastError());
 			return 1;
 		}
 	}
