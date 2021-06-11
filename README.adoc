@@ -9,6 +9,7 @@ Currently has patches that allow you to:
 
 * See deleted messages
 * Send messages in channels with a cooldown enabled
+  Side note: The patch won't tell you how long you need to wait until you can send messages. Attempting to send messages when you're not supposed to could trip Discord's anti-spam system, though I've done it myself enough times to where I feel it's not a massive risk. *You've been warned.*
 
 Adding features that require more than changing a few bytes is not in the scope of this project.
 
