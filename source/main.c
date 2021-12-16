@@ -74,14 +74,14 @@ i32 main(i32 args_count, char** args) {
     i32 file;
     {
         i32 desired_access = O_RDWR;
-        if ((file = open(input.cs, desired_access)) == -1) {
+        if ((file = open(input.cstr, desired_access)) == -1) {
             fprintf(stderr, "Failed to open file \"%.*s\"\n", S8VArg(input));
             return 1;
         }
     }
     
     struct stat stats;
-    if (stat(input.cs, &stats) == -1) {
+    if (stat(input.cstr, &stats) == -1) {
         fputs("Failed to get file stats\n", stderr);
         return 1;
     }
