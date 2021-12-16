@@ -31,7 +31,7 @@ jobs:
     steps:
     - script: |
         call "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x64
-        call "build_release.bat"
+        call "build.bat" release
         move %SYSTEM_DEFAULTWORKINGDIRECTORY%\build\patcher.exe %BUILD_ARTIFACTSTAGINGDIRECTORY%\patcher-windows-x64.exe
       displayName: Build
 

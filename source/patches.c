@@ -5,13 +5,13 @@
 #endif
 
 #define PATCH(patch_name, patch_offset, ...)              \
-	global const u8 patch_name##_pattern[] = __VA_ARGS__; \
+    global const u8 patch_name##_pattern[] = __VA_ARGS__; \
                                                           \
-	global const Patch patch_name = {                     \
-		.name	 = S8LitComp(#patch_name),                \
-		.offset	 = patch_offset,                          \
-		.pattern = PatternComp(patch_name##_pattern),     \
-	};
+    global const Patch patch_name = {                     \
+        .name    = S8LitComp(#patch_name),                \
+        .offset  = patch_offset,                          \
+        .pattern = PatternComp(patch_name##_pattern),     \
+    };
 #include PATCHES_INCLUDE_PATH
 #undef PATCH
 

@@ -7,11 +7,11 @@ typedef Patch Check;
 #endif
 
 #define CHECK(check_name, check_offset, ...)              \
-	global const Check check_name = {                     \
-		.name	 = S8LitComp(#check_name),                \
-		.offset	 = check_offset,                          \
-		.pattern = PatternFromStringLitComp(__VA_ARGS__), \
-	};
+    global const Check check_name = {                     \
+        .name    = S8LitComp(#check_name),                \
+        .offset  = check_offset,                          \
+        .pattern = PatternFromStringLitComp(__VA_ARGS__), \
+    };
 #include CHECKS_INCLUDE_PATH
 #undef CHECK
 
