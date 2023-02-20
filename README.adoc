@@ -9,14 +9,40 @@ Currently has patches that allow you to:
 
 * See deleted messages
 * Send messages in channels with a cooldown enabled
-  Side note: The patch won't tell you how long you need to wait until you can send messages. Attempting to send messages when you're not supposed to could trip Discord's anti-spam system, though I've done it myself enough times to where I feel it's not a massive risk. *You've been warned.*
+  Side note: The patch won't tell you how long you need to wait until you can send messages. Attempting to send messages when you're not supposed to could trip Discord's anti-spam system, though I've done it myself enough times to where I feel it's not a massive risk. *You've been warned regardless.*
 
 Adding features that require more than changing a few bytes is not in the scope of this project.
+_P.S.: You should probably also see https://github.com/geniiii/ripcord-audio-hook[ripcord-audio-hook]._
 
-== Supported platforms
-Windows and Linux, though the latter won't get updated as quickly.
+== Usage
+`patcher [-h] [-l] [filename (Ripcord.exe/Ripcord) [disabled patches]]]`
 
-== Supported versions
-Windows: `0.4.29`
-Linux: `0.4.29`
+==== Windows
+. Download the latest version from the https://github.com/geniiii/patcher/releases[Releases page].
+. Put `patcher-windows-x64.exe` into your Ripcord directory and run it.
+. Run the now patched `Ripcord.exe`.
+
+==== Linux
+. Extract the Ripcord AppImage using `--appimage-extract`.
+. Download the latest version from the https://github.com/geniiii/patcher/releases[Releases page].
+. Put `patcher-linux-x64` into the directory where you extracted the AppImage and run it.
+. Run the now patched `Ripcord` executable.
+
+== Supported Ripcord versions
+[cols="1,1"]
+|===
+|Platform |Version
+
+|Windows
+|0.4.29
+
+|Linux
+|0.4.29
+
+|macOS
+|n/a
+|===
+
+macOS is not supported and probably never will be; I don't own a Mac, nor do I have a macOS VM.
+
 This doesn't use pattern matching, so I have to manually update every time a new Ripcord version is released. It's usually updated within 12 hours of a new release, but I can't guarantee anything.
